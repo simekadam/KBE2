@@ -44,7 +44,7 @@ class Bezpecnost {
             this.prepareTable(this.password, this.alphabet);
             this.prepareStringToEncrypt();
             this.encrypt();
-            System.out.println(returnEncryptedText().trim());
+			System.out.println(returnEncryptedText().trim());
             this.encryptedString = "";
             //System.out.print(this.password+" "+returnEncryptedText().trim()+":::::"+this.textToEncrypt+"        |||||     ");
             //outputBuilder.append("\n");
@@ -224,15 +224,13 @@ class Bezpecnost {
 
     void prepareStringToEncrypt() {
         this.pairsToEncrypt = new HashMap<Integer, String>();
-        String alterTextToEncrypt = this.textToEncrypt.replaceAll(" ", "");
+        String alterTextToEncrypt = this.textToEncrypt.replaceAll(" ", " ");
         alterTextToEncrypt = Normalizer.normalize(alterTextToEncrypt, Form.NFD).replaceAll("[^\\p{ASCII}]", "");
         alterTextToEncrypt = alterTextToEncrypt.replaceAll("[^A-Z]", "");
 //System.out.println( "e "+this.password+" "+alterTextToEncrypt);
         int increment = 0;
         int index = 0;
-        if (alterTextToEncrypt.length() % 2 != 0) {
-            alterTextToEncrypt = alterTextToEncrypt.concat("X");
-        }
+        
         for (char ch : alterTextToEncrypt.toCharArray()) {
             if (increment % 2 == 0) {
                 this.pair = String.valueOf(ch);
@@ -241,19 +239,25 @@ class Bezpecnost {
                 //if (this.password.equals("RADIO")) {
 	//POKUD JSOU ZNAKY VE DVOJICI STEJNE PRIDAM X
                     if (String.valueOf(ch).equals(this.pair)) {
-                        this.pair += getFiller();
-                        increment++;
-                        this.pairsToEncrypt.put(index++, this.pair);
+                        
+if(this.password.equals("RADdIO")){
+	this.pair += "X";
+	increment++;
+    this.pairsToEncrypt.put(index++, this.pair);
 
-                        this.pair = String.valueOf(ch);
-                        increment++;
-                    //} else {
-                       // this.pair += String.valueOf(ch);
-                        //System.out.print(pair+" ");
-                       // this.pairsToEncrypt.put(index++, this.pair);
+    this.pair = String.valueOf(ch);
+    increment++;
+}
+else{
+	this.pair += "X";
+	increment++;
+	                        this.pairsToEncrypt.put(index++, this.pair);
 
-                       // increment++;
-                //    }
+	                        this.pair = String.valueOf(ch);
+	                        increment++;
+} 
+                        
+                 
                 } else {
                     this.pair += String.valueOf(ch);
                     //System.out.print(pair+" ");
@@ -262,10 +266,12 @@ class Bezpecnost {
                     increment++;
                 }
             }
-			if (alterTextToEncrypt.length() % 2 != 0) {
-	            alterTextToEncrypt = alterTextToEncrypt.concat("X");
-	        }
+			
         }
+		if(this.pair.length()==1){
+			this.pair+="X";
+			this.pairsToEncrypt.put(index++, this.pair);
+		}
         //System.out.println("");
     }
 
