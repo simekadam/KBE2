@@ -38,16 +38,14 @@ class Bezpecnost {
         if (this.token.equals("end")) {
             //System.out.print(outputBuilder.toString());
             return false;
-        }
-
-        else if(this.token.equals("e")) {
+        } else if (this.token.equals("e")) {
             this.password = nextToken(" ").trim().toUpperCase();
             this.textToEncrypt = nextToken("\n").trim().toUpperCase();
             this.prepareTable(this.password, this.alphabet);
             this.prepareStringToEncrypt();
             this.encrypt();
             System.out.println(returnEncryptedText().trim());
-			this.encryptedString = "";
+            this.encryptedString = "";
             //System.out.print(this.password+" "+returnEncryptedText().trim()+":::::"+this.textToEncrypt+"        |||||     ");
             //outputBuilder.append("\n");
 
@@ -59,7 +57,7 @@ class Bezpecnost {
             this.decrypt();
             //System.out.print(this.password+" "+this.decryptedString+" "+this.textToDecrypt+"        |||||     ");
             System.out.println(this.decryptedString.trim());
-			this.decryptedString="";
+            this.decryptedString = "";
             //outputBuilder.append("\n");
         }
 
@@ -78,8 +76,12 @@ class Bezpecnost {
             int yPositionInTableFirst = this.plaifairTable[(first % 65)] / 5;
             int xPositionInTableSecond = this.plaifairTable[(second % 65)] % 5;
             int yPositionInTableSecond = this.plaifairTable[(second % 65)] / 5;
-            if(yPositionInTableFirst==5)yPositionInTableFirst=4;
-            if(yPositionInTableSecond==5)yPositionInTableSecond=4;
+            if (yPositionInTableFirst == 5) {
+                yPositionInTableFirst = 4;
+            }
+            if (yPositionInTableSecond == 5) {
+                yPositionInTableSecond = 4;
+            }
             if (yPositionInTableFirst == yPositionInTableSecond) {
 
                 xPositionInTableFirst = (xPositionInTableFirst + 1) % 5;
@@ -108,12 +110,16 @@ class Bezpecnost {
             String tmp = (String) this.pairsToDecrypt.get(Integer.valueOf(key));
             char first = tmp.charAt(0);
             char second = tmp.charAt(1);
-            int xPositionInTableFirst = (int)this.plaifairTable[(first % 65)] % 5;
-            int yPositionInTableFirst = (int)this.plaifairTable[(first %65)] / 5;
-            int xPositionInTableSecond = (int)this.plaifairTable[(second % 65)] % 5;
-            int yPositionInTableSecond = (int)this.plaifairTable[(second % 65)] / 5;
-            if(yPositionInTableFirst==5)yPositionInTableFirst=4;
-            if(yPositionInTableSecond==5)yPositionInTableSecond=4;
+            int xPositionInTableFirst = (int) this.plaifairTable[(first % 65)] % 5;
+            int yPositionInTableFirst = (int) this.plaifairTable[(first % 65)] / 5;
+            int xPositionInTableSecond = (int) this.plaifairTable[(second % 65)] % 5;
+            int yPositionInTableSecond = (int) this.plaifairTable[(second % 65)] / 5;
+            if (yPositionInTableFirst == 5) {
+                yPositionInTableFirst = 4;
+            }
+            if (yPositionInTableSecond == 5) {
+                yPositionInTableSecond = 4;
+            }
             if (yPositionInTableFirst == yPositionInTableSecond) {
                 xPositionInTableFirst = (xPositionInTableFirst + 4) % 5;
                 xPositionInTableSecond = (xPositionInTableSecond + 4) % 5;
@@ -126,12 +132,11 @@ class Bezpecnost {
                 this.decryptedString += String.valueOf(this.plaifairTabelInverted[(xPositionInTableSecond + yPositionInTableSecond * 5)]);
             } else {
 
-                try{
-                this.decryptedString += String.valueOf(this.plaifairTabelInverted[(xPositionInTableSecond + (yPositionInTableFirst * 5))]);
-                this.decryptedString += String.valueOf(this.plaifairTabelInverted[(xPositionInTableFirst + yPositionInTableSecond * 5)]);
-                }
-                catch(IndexOutOfBoundsException ex){
-                    System.out.println(xPositionInTableSecond +":"+yPositionInTableFirst+":"+first);
+                try {
+                    this.decryptedString += String.valueOf(this.plaifairTabelInverted[(xPositionInTableSecond + (yPositionInTableFirst * 5))]);
+                    this.decryptedString += String.valueOf(this.plaifairTabelInverted[(xPositionInTableFirst + yPositionInTableSecond * 5)]);
+                } catch (IndexOutOfBoundsException ex) {
+                    System.out.println(xPositionInTableSecond + ":" + yPositionInTableFirst + ":" + first);
                 }
             }
         }
@@ -146,16 +151,18 @@ class Bezpecnost {
 
         return strb.toString();
     }
+
     static String removeDuplicates(String s) {
-    StringBuilder noDupes = new StringBuilder();
-    for (int i = 0; i < s.length(); i++) {
-        String si = s.substring(i, i + 1);
-        if (noDupes.indexOf(si) == -1) {
-            noDupes.append(si);
+        StringBuilder noDupes = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            String si = s.substring(i, i + 1);
+            if (noDupes.indexOf(si) == -1) {
+                noDupes.append(si);
+            }
         }
+        return noDupes.toString();
     }
-    return noDupes.toString();
-}
+
     String returnDecryptedText() {
         StringBuilder strb = new StringBuilder(this.decryptedString);
         int howManyTimes = strb.length() / 5;
@@ -169,16 +176,16 @@ class Bezpecnost {
     void prepareTable(String key, String alphabet) {
         key = key.replace("J", "I");
         //key = removeDuplicates(key);
-        
+
         String alterAlphabet = alphabet;
-		alterAlphabet = key + alterAlphabet;
+        alterAlphabet = key + alterAlphabet;
         for (char ch : key.toCharArray()) {
             alterAlphabet = alterAlphabet.replaceAll(String.valueOf(ch), " ");
         }
-		alterAlphabet = key + alterAlphabet;
+        alterAlphabet = key + alterAlphabet;
 
         alterAlphabet = alterAlphabet.replaceAll(" ", "");
-		alterAlphabet = removeDuplicates(alterAlphabet);
+        alterAlphabet = removeDuplicates(alterAlphabet);
         this.plaifairTable = new int[26];
         this.plaifairTabelInverted = new char[alterAlphabet.length()];
         int hashTableKey = 0;
@@ -187,20 +194,20 @@ class Bezpecnost {
             this.plaifairTabelInverted[(hashTableKey)] = ch;
             hashTableKey++;
         }
-        
+
     }
 
     void prepareStringToDecrypt() {
         this.pairsToDecrypt = new HashMap<Integer, String>();
-       String alterTextToDecrypt = this.textToDecrypt;
-        alterTextToDecrypt = Normalizer.normalize(alterTextToDecrypt, Form.NFD).replaceAll("[^\\p{ASCII}]","");
+        String alterTextToDecrypt = this.textToDecrypt;
+        alterTextToDecrypt = Normalizer.normalize(alterTextToDecrypt, Form.NFD).replaceAll("[^\\p{ASCII}]", "");
         alterTextToDecrypt = alterTextToDecrypt.replaceAll("[^A-Z]", "");
         int increment = 0;
         int index = 0;
         if (alterTextToDecrypt.length() % 2 != 0) {
             alterTextToDecrypt = alterTextToDecrypt + "X";
         }
-                //System.out.println( this.password+":"+alterTextToDecrypt);
+        //System.out.println( this.password+":"+alterTextToDecrypt);
 
         for (char ch : alterTextToDecrypt.toCharArray()) {
             if (increment % 2 == 0) {
@@ -218,7 +225,7 @@ class Bezpecnost {
     void prepareStringToEncrypt() {
         this.pairsToEncrypt = new HashMap<Integer, String>();
         String alterTextToEncrypt = this.textToEncrypt.replaceAll(" ", "");
-        alterTextToEncrypt = Normalizer.normalize(alterTextToEncrypt, Form.NFD).replaceAll("[^\\p{ASCII}]","");
+        alterTextToEncrypt = Normalizer.normalize(alterTextToEncrypt, Form.NFD).replaceAll("[^\\p{ASCII}]", "");
         alterTextToEncrypt = alterTextToEncrypt.replaceAll("[^A-Z]", "");
 //System.out.println( "e "+this.password+" "+alterTextToEncrypt);
         int increment = 0;
@@ -230,31 +237,34 @@ class Bezpecnost {
             if (increment % 2 == 0) {
                 this.pair = String.valueOf(ch);
                 increment++;
-            } else{
-				if(this.password.equals("RADIO")){
-					if(String.valueOf(ch).equals(this.pair)){
-					this.pair += getFiller();
-					increment++;
-					this.pairsToEncrypt.put(index++, this.pair);
-	                
-					this.pair = String.valueOf(ch);
-	                increment++;
-	}
-	else{
-		this.pair += String.valueOf(ch);
-            //System.out.print(pair+" ");
-            this.pairsToEncrypt.put(index++, this.pair);
+            } else {
+                //if (this.password.equals("RADIO")) {
+	//POKUD JSOU ZNAKY VE DVOJICI STEJNE PRIDAM X
+                    if (String.valueOf(ch).equals(this.pair)) {
+                        this.pair += getFiller();
+                        increment++;
+                        this.pairsToEncrypt.put(index++, this.pair);
 
-            increment++;
-	}
-				}if(!this.password.equals("RADIO")){
-               this.pair += String.valueOf(ch);
-                //System.out.print(pair+" ");
-                this.pairsToEncrypt.put(index++, this.pair);
+                        this.pair = String.valueOf(ch);
+                        increment++;
+                    //} else {
+                       // this.pair += String.valueOf(ch);
+                        //System.out.print(pair+" ");
+                       // this.pairsToEncrypt.put(index++, this.pair);
 
-                increment++;
-}
-            } 
+                       // increment++;
+                //    }
+                } else {
+                    this.pair += String.valueOf(ch);
+                    //System.out.print(pair+" ");
+                    this.pairsToEncrypt.put(index++, this.pair);
+
+                    increment++;
+                }
+            }
+			if (alterTextToEncrypt.length() % 2 != 0) {
+	            alterTextToEncrypt = alterTextToEncrypt.concat("X");
+	        }
         }
         //System.out.println("");
     }
