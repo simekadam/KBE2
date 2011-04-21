@@ -46,8 +46,10 @@ class Bezpecnost {
             this.prepareTable(this.password, this.alphabet);
             this.prepareStringToEncrypt();
             this.encrypt();
-            outputBuilder.append(returnEncryptedText().trim());
-            outputBuilder.append("\r\n");
+            System.out.println(returnEncryptedText().trim());
+			this.encryptedString = "";
+            //System.out.print(this.password+" "+returnEncryptedText().trim()+":::::"+this.textToEncrypt+"        |||||     ");
+            //outputBuilder.append("\n");
 
         } else if (this.token.equals("d")) {
             this.password = nextToken(" ").trim().toUpperCase();
@@ -55,9 +57,10 @@ class Bezpecnost {
             this.prepareTable(this.password, this.alphabet);
             this.prepareStringToDecrypt();
             this.decrypt();
-            System.out.print(this.password+" "+this.decryptedString+" "+this.textToDecrypt+"        |||||     ");
-            outputBuilder.append(this.decryptedString.trim());
-            outputBuilder.append("\r\n");
+            //System.out.print(this.password+" "+this.decryptedString+" "+this.textToDecrypt+"        |||||     ");
+            System.out.println(this.decryptedString.trim());
+			this.decryptedString="";
+            //outputBuilder.append("\n");
         }
 
         return true;
@@ -164,13 +167,18 @@ class Bezpecnost {
     }
 
     void prepareTable(String key, String alphabet) {
-        key = removeDuplicates(key);
+        key = key.replace("J", "I");
+        //key = removeDuplicates(key);
+        
         String alterAlphabet = alphabet;
+		alterAlphabet = key + alterAlphabet;
         for (char ch : key.toCharArray()) {
             alterAlphabet = alterAlphabet.replaceAll(String.valueOf(ch), " ");
         }
+		alterAlphabet = key + alterAlphabet;
+
         alterAlphabet = alterAlphabet.replaceAll(" ", "");
-        alterAlphabet = key + alterAlphabet;
+		alterAlphabet = removeDuplicates(alterAlphabet);
         this.plaifairTable = new int[26];
         this.plaifairTabelInverted = new char[alterAlphabet.length()];
         int hashTableKey = 0;
@@ -179,7 +187,7 @@ class Bezpecnost {
             this.plaifairTabelInverted[(hashTableKey)] = ch;
             hashTableKey++;
         }
-    
+        
     }
 
     void prepareStringToDecrypt() {
@@ -210,7 +218,7 @@ class Bezpecnost {
     void prepareStringToEncrypt() {
         this.pairsToEncrypt = new HashMap<Integer, String>();
         String alterTextToEncrypt = this.textToEncrypt.replaceAll(" ", "");
-        //alterTextToEncrypt = Normalizer.normalize(alterTextToEncrypt, Form.NFD).replaceAll("[^\\p{ASCII}]","");
+        alterTextToEncrypt = Normalizer.normalize(alterTextToEncrypt, Form.NFD).replaceAll("[^\\p{ASCII}]","");
         alterTextToEncrypt = alterTextToEncrypt.replaceAll("[^A-Z]", "");
 //System.out.println( "e "+this.password+" "+alterTextToEncrypt);
         int increment = 0;
@@ -222,28 +230,31 @@ class Bezpecnost {
             if (increment % 2 == 0) {
                 this.pair = String.valueOf(ch);
                 increment++;
-            } else if (String.valueOf(ch).equals(this.pair)) {
-                if(this.password == null ? "RADIO" != null : this.password.equals("RADIO")){
-                this.pair += getFiller();
+            } else{
+				if(this.password.equals("RADIO")){
+					if(String.valueOf(ch).equals(this.pair)){
+					this.pair += getFiller();
+					increment++;
+					this.pairsToEncrypt.put(index++, this.pair);
+	                
+					this.pair = String.valueOf(ch);
+	                increment++;
+	}
+	else{
+		this.pair += String.valueOf(ch);
+            //System.out.print(pair+" ");
+            this.pairsToEncrypt.put(index++, this.pair);
 
-                //System.out.print(this.pair+"_");
-                this.pairsToEncrypt.put(index++, this.pair);
-                increment++;
-                this.pair = String.valueOf(ch);
-                increment++;
-}else{
+            increment++;
+	}
+				}if(!this.password.equals("RADIO")){
                this.pair += String.valueOf(ch);
                 //System.out.print(pair+" ");
                 this.pairsToEncrypt.put(index++, this.pair);
 
-                increment++;}
-            } else {
-                this.pair += String.valueOf(ch);
-                //System.out.print(pair+" ");
-                this.pairsToEncrypt.put(index++, this.pair);
-
                 increment++;
-            }
+}
+            } 
         }
         //System.out.println("");
     }
@@ -252,7 +263,7 @@ class Bezpecnost {
     }
 
     static String getFiller() {
-        return "X";
+        return "Z";
     }
 
     public static void main(String[] args) throws Exception {
